@@ -12,8 +12,9 @@ import com.mysql.jdbc.Statement;
 
 public class UsuarioDAO implements Crudable<Usuario> {
 	private static UsuarioDAO INSTANCE = null;
-	private final String SQL_GET_ALL = "SELECT nombre, password FROM usuario ORDER BY id DESC LIMIT 1000";
+	private final String SQL_GET_ALL = "SELECT id,nombre, password FROM usuario ORDER BY id DESC LIMIT 1000";
 	private final String SQL_GET_BY_ID = "SELECT nombre, password FROM usuario WHERE id = ? LIMIT 1000";
+	private final String SQL_GET_BY_NOMBRE = "SELECT id,nombre,password FROM usuario WHERE nombre=? ";
 	private final String SQL_UPDATE = "UPDATE usuario SET nombre = ?, contrasena = ? WHERE id = ?;";
 	private final String SQL_INSERT = "INSERT INTO usuario (nombre, password) VALUES (?, ?);";
 	private final String SQL_DELETE = "DELETE FROM usuario WHERE id = ?;";
@@ -73,9 +74,30 @@ public class UsuarioDAO implements Crudable<Usuario> {
 	}
 
 	@Override
-	public Usuario getById(String id) {
+	public Usuario getById(String id2) {
+		Long id = (long) 0;
+		if (id2 != null) {
+			id = Long.parseLong(id2);
+		}
+		Usuario u = null;
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement ps = con.prepareStatement(SQL_GET_BY_ID);) {
 
-		return null;
+			ps.setLong(1, id);
+
+			try (ResultSet rs = ps.executeQuery();) {				
+
+				// Mapear ResultSet al objeto o array objetos
+				while (rs.next()) {
+					u = rowMapper(rs);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return u;
 	}
 
 	@Override
@@ -89,13 +111,40 @@ public class UsuarioDAO implements Crudable<Usuario> {
 		boolean resul = false;
 		return false;
 	}
+	
+	public Usuario getByNombre(String nombre) {
+		String nom = "";
+		if (nombre != null) {
+			nom = nombre;
+		}
+		
+		Usuario u = null;
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement ps = con.prepareStatement(SQL_GET_BY_NOMBRE)) {
+
+			ps.setString(1, nom);
+
+			try (ResultSet rs = ps.executeQuery();) {				
+
+				// Mapear ResultSet al objeto o array objetos
+				while (rs.next()) {
+					u = rowMapper(rs);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return u;
+	}
 
 	private Usuario rowMapper(ResultSet rs) throws Exception {
 		Usuario u = new Usuario();
 		if (rs != null) {
 			u.setId(rs.getLong("id"));
-			u.setNombre(rs.getString("codigo"));
-			u.setContrasena(rs.getString("nombre"));
+			u.setNombre(rs.getString("nombre"));
+			u.setContrasena(rs.getString("password"));
 		}
 		return u;
 	}

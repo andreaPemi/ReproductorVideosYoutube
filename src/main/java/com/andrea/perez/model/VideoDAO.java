@@ -110,7 +110,7 @@ public class VideoDAO implements Crudable<Video> {
 			
 			ps.setLong(1, id);
 			
-			try (ResultSet rs = ps.executeQuery();){
+			try (ResultSet rs = ps.executeQuery()){
 				//Obtener resultados
 //				ResultSet rs = ps.executeQuery();
 				

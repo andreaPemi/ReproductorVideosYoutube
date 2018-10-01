@@ -14,8 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.andrea.perez.model.UsuarioDAO;
 import com.andrea.perez.pojo.Alert;
 import com.andrea.perez.pojo.Usuario;
+import com.andrea.perez.pojo.Video;
 
 /**
  * Servlet implementation class UserController
@@ -30,6 +32,9 @@ public class UserController extends HttpServlet {
 	private static String user = "";
 	private static String pass = "";
 	private static String recordar = "";
+
+	private static UsuarioDAO daoUsuario = null;
+	private static ArrayList<Video> videos = null;
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -67,31 +72,19 @@ public class UserController extends HttpServlet {
 			// recordar = request.getParameter("recordar"); Gestionar las cockies
 
 			if (user != null && pass != null) {
-				
-			}
 
-//			//Comprobar usuario contra BBDD TODO
-//			if(user.equals("admin") && pswd.equals("admin") ||
-//					user.equals("pepe") && pswd.equals("pepe") ||
-//					user.equals("manoli") && pswd.equals("manoli") ||
-//					user.equals("josepo") && pswd.equals("josepo")) {
-//				
-//				alert = new Alert(Alert.ALERT_PRIMARY, MessageFormat.format(idiomas.getString("msj.bienvenida"),user));
-//				
-//				Usuario u = new Usuario(user, pswd);
-//				
-//				//Guardar Usuario en session
-//				session.setAttribute("usuario", u);
-//				session.setMaxInactiveInterval(60*5); //5 minutos
-//				
-//				//Gestionar cookies
-//				gestionarCookies(request, response, u);
-//
-//			}else {
-//				alert = new Alert(Alert.ALERT_WARNING, "Credenciales incorrectas. Si aún no estás registrado, hazlo <a href='registro.jsp'>aquí</a>");
-//			}
+				Usuario u = new Usuario(user, pass);
+				daoUsuario = UsuarioDAO.getInstance();
+				u = daoUsuario.getByNombre(user);
+				if (u.getNombre().equals(user)&& u.getContrasena().equals(pass)) {
+					alert = new Alert(Alert.ALERT_PRIMARY, MessageFormat.format(idiomas.getString("msj.bienvenida"), user));
+				}else {
+					alert = new Alert(Alert.ALERT_WARNING,
+							"Credenciales incorrectas. Si aún no estás registrado, hazlo <a href='login.jsp'>aquí</a>");
+				}
+			} 
 
-//			session.setAttribute("alert", alert);
+			session.setAttribute("alert", alert);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -100,11 +93,6 @@ public class UserController extends HttpServlet {
 			// request.getRequestDispatcher("/").forward(request, response);
 			response.sendRedirect(request.getContextPath() + "/inicio");
 		}
-	}
-
-	private void gestionarUsuario(String user, String pass) {
-		boolean resul = false;
-
 	}
 
 	private void gestionarCookies(HttpServletRequest request, HttpServletResponse response, Usuario u) {
