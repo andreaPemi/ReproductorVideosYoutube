@@ -36,6 +36,9 @@ public class UserController extends HttpServlet {
 	private static UsuarioDAO daoUsuario = null;
 	private static ArrayList<Video> videos = null;
 
+	private static final String VIEW_INICIO_ADMIN = "/backoffice/inicio";
+	private static final String VIEW_INICIO_USER = "/inicio";
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -59,7 +62,7 @@ public class UserController extends HttpServlet {
 			throws ServletException, IOException {
 		Alert alert = new Alert();
 		HttpSession session = request.getSession();
-
+		String view = VIEW_INICIO_USER;// redireccionar las vistas
 		try {
 			// Locale locale = request.getLocale(); (not empty
 			// sessionScope.idioma)?sessionScope.idioma:'es_ES'
@@ -70,6 +73,7 @@ public class UserController extends HttpServlet {
 			user = request.getParameter("user");
 			pass = request.getParameter("pswd");
 			// recordar = request.getParameter("recordar"); Gestionar las cockies
+			
 
 			if (user != null && pass != null) {
 
@@ -85,6 +89,10 @@ public class UserController extends HttpServlet {
 					session.setAttribute("usuario", u);
 					session.setMaxInactiveInterval(60 * 60);// 1 hora
 
+					if (u.getRol() == Usuario.ROL_ADMIN) {
+						view = VIEW_INICIO_ADMIN;
+					}
+
 				} else {
 					alert = new Alert(Alert.ALERT_WARNING,
 							"Credenciales incorrectas. Si aún no estás registrado, hazlo <a href='registro.jsp'>aquí</a>");
@@ -93,14 +101,14 @@ public class UserController extends HttpServlet {
 
 			}
 
-			session.setAttribute("alert", alert);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			session.setAttribute("alert", alert);
 			alert = null;
 			// request.getRequestDispatcher("/").forward(request, response);
-			response.sendRedirect(request.getContextPath() + "/inicio");
+			response.sendRedirect(request.getContextPath() + view);
 		}
 	}
 

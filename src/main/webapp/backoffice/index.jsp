@@ -1,46 +1,111 @@
-<%@page import="java.util.Map.Entry"%>
-<%@page import="java.util.Iterator"%>
-<%@page import="java.util.HashMap"%>
-<%@page import="com.andrea.perez.pojo.Usuario"%>
+<%@include file="includes/header.jsp"%>
 
-ESTAMOS EN EL BACKOFFICE
-*Solo pueden entrar usuarios logeados* 
-<br>
+    <div id="wrapper">
+<%@include file="includes/navbar.jsp"%>      
 
-<% Usuario u = (Usuario) session.getAttribute("usuario");
-	if (u == null){
-		%>
-			<p style="color:red"> Usuario nulo, se ha saltado el login!</p>
-		<%
-	}else{
-		%>
-			Usuario: <%=u.getNombre() %>
-		<%
-	}
-%>
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">BackOffice</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-comments fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">${videos}</div>
+                                    <div>Videos</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">Ver detalles</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-tasks fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">${usuarios}</div>
+                                    <div>Usuarios</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-shopping-cart fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">124</div>
+                                    <div>New Orders!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-support fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">13</div>
+                                    <div>Support Tickets!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+           
 
-<br>
+    </div>
+    <!-- /#wrapper -->
+<%@include file="includes/footer.jsp"%>
+</body>
 
-<img src="http://denkaidigital.denkaidigital.netdna-cdn.com/wp-content/uploads/2018/02/back-office-outsourcing-services.png">
-
-<br>
-
-<h2>Usuarios Conectados</h2>
-
-<% 
-	HashMap<String,Usuario> usuariosConectados =  (HashMap<String,Usuario>)application.getAttribute("uConectados");
-	
-	for(HashMap.Entry<String,Usuario> uConectado : usuariosConectados.entrySet()){
-		
-		
-// 	Iterator it = usuariosConectados.entrySet().iterator();
-// 	while (it.hasNext()) {
-// 	    Entry pair = (Entry)it.next();
-// 	    System.out.println(pair.getKey() + " = " + pair.getValue());
-// 	    it.remove(); // avoids a ConcurrentModificationException
-// 		Usuario uConectado = (Usuario) it.next();
-%>
-		<li><%=uConectado.getValue().getNombre()%></li>
-<%
-	}
-%>
+</html>

@@ -45,6 +45,8 @@ public class FilterBackoffice implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 				
 			try {
+				
+				
 			
 			HttpSession session =  req.getSession();
 			Usuario usuario = (Usuario) session.getAttribute("usuario");
@@ -53,6 +55,7 @@ public class FilterBackoffice implements Filter {
 				// pass the request along the filter chain
 				chain.doFilter(request, response);
 			}else {
+				//TODO comprobar rol del usuario
 				informacionCliente(req);
 				
 				//usuario no loggeado

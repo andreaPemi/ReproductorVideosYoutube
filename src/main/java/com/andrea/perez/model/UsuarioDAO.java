@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.andrea.perez.pojo.Usuario;
-import com.andrea.perez.pojo.Video;
 import com.mysql.jdbc.Statement;
 
 public class UsuarioDAO implements Crudable<Usuario> {
 	private static UsuarioDAO INSTANCE = null;
-	private static final String SQL_GET_ALL = "SELECT id,nombre, password FROM usuario ORDER BY id DESC LIMIT 1000";
+	private static final String SQL_GET_ALL = "SELECT id,nombre, password,rol FROM usuario ORDER BY id DESC LIMIT 1000";
 	private static final String SQL_GET_BY_ID = "SELECT nombre, password FROM usuario WHERE id = ? LIMIT 1000";
 	private static final String SQL_GET_BY_NOMBRE = "SELECT id,nombre,password,rol FROM usuario WHERE nombre=? AND password=?";
 	private static final String SQL_UPDATE = "UPDATE usuario SET nombre = ?, contrasena = ? WHERE id = ?;";
@@ -151,6 +150,7 @@ public class UsuarioDAO implements Crudable<Usuario> {
 			u.setId(rs.getLong("id"));
 			u.setNombre(rs.getString("nombre"));
 			u.setContrasena(rs.getString("password"));
+			u.setRol(rs.getInt("rol"));
 		}
 		return u;
 	}
