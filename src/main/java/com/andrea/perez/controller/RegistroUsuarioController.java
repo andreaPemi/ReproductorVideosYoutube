@@ -25,6 +25,12 @@ public class RegistroUsuarioController extends HttpServlet {
 	private static String pswdRepe = "";
 	Alert alert = null;
 
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doProcess(request, response);
+	}
+	
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doProcess(request, response);

@@ -75,17 +75,24 @@ public class UserController extends HttpServlet {
 
 				Usuario u = new Usuario(user, pass);
 				daoUsuario = UsuarioDAO.getInstance();
-				u = daoUsuario.getByNombre(user);
-				if (u.getNombre().equals(user)&& u.getContrasena().equals(pass)) {
-					alert = new Alert(Alert.ALERT_PRIMARY, MessageFormat.format(idiomas.getString("msj.bienvenida"), user));
+				if (daoUsuario.getByNombre(user, pass) != null) {
+
+					u = daoUsuario.getByNombre(user, pass);
+
+					alert = new Alert(Alert.ALERT_PRIMARY,
+							MessageFormat.format(idiomas.getString("msj.bienvenida"), user));
+
 					session.setAttribute("usuario", u);
-					session.setMaxInactiveInterval(60*60);//1 hora
-				}else {
+					session.setMaxInactiveInterval(60 * 60);// 1 hora
+
+				} else {
 					alert = new Alert(Alert.ALERT_WARNING,
-							"Credenciales incorrectas. Si aún no estás registrado, hazlo <a href='login.jsp'>aquí</a>");
+							"Credenciales incorrectas. Si aún no estás registrado, hazlo <a href='registro.jsp'>aquí</a>");
+
 				}
-			} 
-			
+
+			}
+
 			session.setAttribute("alert", alert);
 		} catch (Exception e) {
 			e.printStackTrace();

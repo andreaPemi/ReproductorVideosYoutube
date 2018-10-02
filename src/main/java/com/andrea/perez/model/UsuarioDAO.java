@@ -14,8 +14,8 @@ public class UsuarioDAO implements Crudable<Usuario> {
 	private static UsuarioDAO INSTANCE = null;
 	private static final String SQL_GET_ALL = "SELECT id,nombre, password FROM usuario ORDER BY id DESC LIMIT 1000";
 	private static final String SQL_GET_BY_ID = "SELECT nombre, password FROM usuario WHERE id = ? LIMIT 1000";
-	private static final String SQL_GET_BY_NOMBRE = "SELECT id,nombre,password FROM usuario WHERE nombre=? ";
-	private static  final String SQL_UPDATE = "UPDATE usuario SET nombre = ?, contrasena = ? WHERE id = ?;";
+	private static final String SQL_GET_BY_NOMBRE = "SELECT id,nombre,password,rol FROM usuario WHERE nombre=? AND password=?";
+	private static final String SQL_UPDATE = "UPDATE usuario SET nombre = ?, contrasena = ? WHERE id = ?;";
 	private static final String SQL_INSERT = "INSERT INTO usuario (nombre, password) VALUES (?, ?);";
 	private static final String SQL_DELETE = "DELETE FROM usuario WHERE id = ?;";
 
@@ -45,11 +45,11 @@ public class UsuarioDAO implements Crudable<Usuario> {
 				int affectedRows = ps.executeUpdate();
 
 				if (affectedRows == 1) {
-					try(ResultSet rs=ps.getGeneratedKeys()) {
-						while(rs.next()) {
+					try (ResultSet rs = ps.getGeneratedKeys()) {
+						while (rs.next()) {
 							pojo.setId(rs.getLong(1));
 						}
-					} 
+					}
 					resul = true;
 				}
 			}
@@ -90,7 +90,7 @@ public class UsuarioDAO implements Crudable<Usuario> {
 
 			ps.setLong(1, id);
 
-			try (ResultSet rs = ps.executeQuery();) {				
+			try (ResultSet rs = ps.executeQuery();) {
 
 				// Mapear ResultSet al objeto o array objetos
 				while (rs.next()) {
@@ -116,20 +116,21 @@ public class UsuarioDAO implements Crudable<Usuario> {
 		boolean resul = false;
 		return false;
 	}
-	
-	public Usuario getByNombre(String nombre) {
+
+	public Usuario getByNombre(String nombre, String password) {
 		String nom = "";
 		if (nombre != null) {
 			nom = nombre;
 		}
-		
+
 		Usuario u = null;
 		try (Connection con = ConnectionManager.getConnection();
 				PreparedStatement ps = con.prepareStatement(SQL_GET_BY_NOMBRE)) {
 
 			ps.setString(1, nom);
+			ps.setString(2, password);
 
-			try (ResultSet rs = ps.executeQuery();) {				
+			try (ResultSet rs = ps.executeQuery()) {
 
 				// Mapear ResultSet al objeto o array objetos
 				while (rs.next()) {
