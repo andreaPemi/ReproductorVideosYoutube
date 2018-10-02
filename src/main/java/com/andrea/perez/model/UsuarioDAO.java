@@ -12,12 +12,12 @@ import com.mysql.jdbc.Statement;
 
 public class UsuarioDAO implements Crudable<Usuario> {
 	private static UsuarioDAO INSTANCE = null;
-	private final String SQL_GET_ALL = "SELECT id,nombre, password FROM usuario ORDER BY id DESC LIMIT 1000";
-	private final String SQL_GET_BY_ID = "SELECT nombre, password FROM usuario WHERE id = ? LIMIT 1000";
-	private final String SQL_GET_BY_NOMBRE = "SELECT id,nombre,password FROM usuario WHERE nombre=? ";
-	private final String SQL_UPDATE = "UPDATE usuario SET nombre = ?, contrasena = ? WHERE id = ?;";
-	private final String SQL_INSERT = "INSERT INTO usuario (nombre, password) VALUES (?, ?);";
-	private final String SQL_DELETE = "DELETE FROM usuario WHERE id = ?;";
+	private static final String SQL_GET_ALL = "SELECT id,nombre, password FROM usuario ORDER BY id DESC LIMIT 1000";
+	private static final String SQL_GET_BY_ID = "SELECT nombre, password FROM usuario WHERE id = ? LIMIT 1000";
+	private static final String SQL_GET_BY_NOMBRE = "SELECT id,nombre,password FROM usuario WHERE nombre=? ";
+	private static  final String SQL_UPDATE = "UPDATE usuario SET nombre = ?, contrasena = ? WHERE id = ?;";
+	private static final String SQL_INSERT = "INSERT INTO usuario (nombre, password) VALUES (?, ?);";
+	private static final String SQL_DELETE = "DELETE FROM usuario WHERE id = ?;";
 
 	private UsuarioDAO() {
 		super();
@@ -39,12 +39,17 @@ public class UsuarioDAO implements Crudable<Usuario> {
 				PreparedStatement ps = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);) {
 			if (pojo != null) {
 
-				ps.setString(1, pojo.getNombre());
-				ps.setString(2, pojo.getContrasena());
+				ps.setString(1, pojo.getNombre().trim());
+				ps.setString(2, pojo.getContrasena().trim());
 
 				int affectedRows = ps.executeUpdate();
 
 				if (affectedRows == 1) {
+					try(ResultSet rs=ps.getGeneratedKeys()) {
+						while(rs.next()) {
+							pojo.setId(rs.getLong(1));
+						}
+					} 
 					resul = true;
 				}
 			}

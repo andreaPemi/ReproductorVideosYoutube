@@ -42,7 +42,7 @@ public class UserController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.getRequestDispatcher("login.jsp").forward(request, response);
+		request.getRequestDispatcher("registro.jsp").forward(request, response);
 		doProcess(request, response);
 	}
 
@@ -78,12 +78,14 @@ public class UserController extends HttpServlet {
 				u = daoUsuario.getByNombre(user);
 				if (u.getNombre().equals(user)&& u.getContrasena().equals(pass)) {
 					alert = new Alert(Alert.ALERT_PRIMARY, MessageFormat.format(idiomas.getString("msj.bienvenida"), user));
+					session.setAttribute("usuario", u);
+					session.setMaxInactiveInterval(60*60);//1 hora
 				}else {
 					alert = new Alert(Alert.ALERT_WARNING,
 							"Credenciales incorrectas. Si aún no estás registrado, hazlo <a href='login.jsp'>aquí</a>");
 				}
 			} 
-
+			
 			session.setAttribute("alert", alert);
 		} catch (Exception e) {
 			e.printStackTrace();

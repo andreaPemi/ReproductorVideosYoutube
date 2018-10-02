@@ -17,54 +17,66 @@ import com.andrea.perez.pojo.Usuario;
 @WebServlet("/registro")
 public class RegistroUsuarioController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+	private static final String VIEW_REGISTRO = "registro.jsp";
+	private static final String VIEW_HOME = "inicio";
+
 	private static String usuario = "";
 	private static String pswd = "";
 	private static String pswdRepe = "";
-	Alert msg=null;
-	
+	Alert alert = null;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doProcess(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doProcess(request,response);
-	}
+	private void doProcess(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-	private void doProcess(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String view = VIEW_REGISTRO;
+
 		try {
 			usuario = request.getParameter("usuario");
 			pswd = request.getParameter("pswd");
 			pswdRepe = request.getParameter("pswdRepe");
-			Usuario u=null;
-			
-			//Comprobar que el pass sean iguales en los campos:
-			if(pswd.equals(pswdRepe)) {
-				if(usuario!=null) {
-					u=new Usuario(usuario,pswd);
-					UsuarioDAO daoUser=UsuarioDAO.getInstance();
-					daoUser.insert(u);
-					
-				}else {
-					msg=new Alert(Alert.ALERT_WARNING,"Error...El campo nombre no puede ir vacio");
+
+			Usuario u = null;
+
+			// Comprobar que el pass sean iguales en los campos:
+			// TODO comprobar nombre repetido en la bbdd
+
+			if (usuario != null && pswd != null && pswdRepe != null) {
+
+				if (pswd.equals(pswdRepe)) {
+					u = new Usuario(usuario, pswd);
+					UsuarioDAO daoUser = UsuarioDAO.getInstance();
+					if (daoUser.insert(u)) {
+						view = VIEW_HOME;
+						alert = new Alert(Alert.ALERT_SUCCESS, "Gracias por registrarse");
+					} else {
+						alert = new Alert(Alert.ALERT_WARNING, "Error..." + u.getNombre() + " ya existe");
+					}
+				} else {
+					alert = new Alert(Alert.ALERT_WARNING, "Error...Las contraseñas deben coincidir");
 				}
-			}else {
-				msg=new Alert(Alert.ALERT_WARNING,"Error...Las contraseñas deben coincidir");
+			} else {
+				alert = new Alert(Alert.ALERT_WARNING, "Error...Se debe rellenar todos los campos");
 			}
-			
-			
-		}catch(Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
-			request.setAttribute("msg", msg);
-			request.getRequestDispatcher("inicio").forward(request, response);
+			alert = new Alert();
+		} finally {
+//enviar atributos e ir a la vista
+
+			if (view.equals(VIEW_HOME)) {
+				request.getSession().setAttribute("alert", alert);
+				response.sendRedirect(request.getContextPath() + "/" + VIEW_HOME);
+			} else {
+				request.setAttribute("alert", alert);
+				request.getRequestDispatcher(view).forward(request, response);
+			}
+
 		}
 	}
 

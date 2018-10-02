@@ -4,6 +4,7 @@ public class Usuario {
 	private long id;
 	private String nombre;
 	private String contrasena;
+	//TODO crear pojo de tipo Rol
 	
 	public Usuario() {
 		super();

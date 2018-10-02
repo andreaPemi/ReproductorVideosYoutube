@@ -32,12 +32,12 @@
 				<span class="navbar-toggler-icon">0</span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
-				<ul class="navbar-nav ml-auto">
-					<li><a href="registro.jsp">registrate</a></li>
+				<ul class="navbar-nav ml-auto">					
 					<li class="nav-item active">
 						<!-- Usuario no loggeado -->
-						<c:if test="${empty usuario}">
+						<c:if test="${empty sessionScope.usuario}">
 							<!-- Formulario de login -->
+							<li><a class="btn btn-primary mb-1 mr-2" href="registro.jsp">registrate</a></li>
 							<form class="form-inline navbar-nav ml-auto" action="login"
 								method="post">
 								<input required type="text" class="form-control mb-1 mr-sm-2" id="inlineFormInputName2" placeholder="Usuario"
@@ -54,7 +54,7 @@
 						</c:if>
 						</div>
 							<!-- Usuario Loggeado -->
-						<c:if test="${not empty usuario}">
+						<c:if test="${not empty sessionScope.usuario}">
 							<div class="">
 								<a class ="mr-2" href="backoffice/index.jsp"><fmt:message key="boton.backoffice"/></a>
 								<span class="text-center" style="color:#FFF">
