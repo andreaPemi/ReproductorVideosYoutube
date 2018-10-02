@@ -23,7 +23,7 @@ public class RegistroUsuarioController extends HttpServlet {
 	private static String usuario = "";
 	private static String pswd = "";
 	private static String pswdRepe = "";
-	Alert alert = null;
+	
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -40,7 +40,7 @@ public class RegistroUsuarioController extends HttpServlet {
 			throws ServletException, IOException {
 
 		String view = VIEW_REGISTRO;
-
+		Alert alert = null;
 		try {
 			usuario = request.getParameter("usuario");
 			pswd = request.getParameter("pswd");
