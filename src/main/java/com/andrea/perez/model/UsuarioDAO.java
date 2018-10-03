@@ -12,7 +12,7 @@ import com.mysql.jdbc.Statement;
 public class UsuarioDAO implements Crudable<Usuario> {
 	private static UsuarioDAO INSTANCE = null;
 	private static final String SQL_GET_ALL = "SELECT id,nombre, password,rol FROM usuario ORDER BY id DESC LIMIT 1000";
-	private static final String SQL_GET_BY_ID = "SELECT nombre, password FROM usuario WHERE id = ? LIMIT 1000";
+	private static final String SQL_GET_BY_ID = "SELECT nombre, password FROM usuario WHERE id = ?";
 	private static final String SQL_GET_BY_NOMBRE = "SELECT id,nombre,password,rol FROM usuario WHERE nombre=? AND password=?";
 	private static final String SQL_UPDATE = "UPDATE usuario SET nombre = ?, contrasena = ? WHERE id = ?;";
 	private static final String SQL_INSERT = "INSERT INTO usuario (nombre, password) VALUES (?, ?);";
@@ -78,10 +78,10 @@ public class UsuarioDAO implements Crudable<Usuario> {
 	}
 
 	@Override
-	public Usuario getById(String id2) {
-		Long id = (long) 0;
-		if (id2 != null) {
-			id = Long.parseLong(id2);
+	public Usuario getById(String idtem) {
+		long id =  0;
+		if (idtem != null) {
+			id = Long.parseLong(idtem);
 		}
 		Usuario u = null;
 		try (Connection con = ConnectionManager.getConnection();
@@ -107,13 +107,45 @@ public class UsuarioDAO implements Crudable<Usuario> {
 	@Override
 	public boolean update(Usuario pojo) {
 		boolean resul = false;
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement ps = con.prepareStatement(SQL_UPDATE);) {
+
+			ps.setString(1, pojo.getNombre());
+			ps.setString(2, pojo.getContrasena());
+			ps.setLong(3, pojo.getId());
+
+			int affectedRows = ps.executeUpdate();
+
+			if (affectedRows == 1) {
+				resul = true;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return resul;
 	}
 
 	@Override
 	public boolean delete(String id) {
 		boolean resul = false;
-		return false;
+
+		try (Connection con = ConnectionManager.getConnection();
+				PreparedStatement ps = con.prepareStatement(SQL_DELETE);) {
+
+			ps.setLong(1, Long.parseLong(id));
+
+			int affectedRows = ps.executeUpdate();
+
+			if (affectedRows == 1) {
+				resul = true;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return resul;
 	}
 
 	public Usuario getByNombre(String nombre, String password) {
